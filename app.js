@@ -8,6 +8,10 @@ const app = express();
 //connect db from index.js using sequelize
 const models = require('./models');
 
+// requiring routers
+const userRouter = require('./routes/user')
+const wikiRouter = require('./routes/wiki')
+
 //verify that connection to db works
 // db.authenticate().then(() => {
 //   console.log('connected to the database');
@@ -21,6 +25,9 @@ app.use(express.json());
 app.use(morgan('dev'));
 // serves up static files from public folder
 app.use(express.static(__dirname + '/public'));
+// plugging in routers
+app.use('/wiki', wikiRouter)
+app.use('/user', userRouter)
 
 const html = `
 <!DOCTYPE html>
@@ -36,7 +43,7 @@ const html = `
 `;
 // root directory will render the following
 app.get('/', (req, res, next) => {
-  res.send(html);
+  res.redirect('/wiki')
 });
 
 // async .sync mothod
@@ -52,3 +59,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`App listening in port ${PORT}`);
 });
+
